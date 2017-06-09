@@ -1,16 +1,29 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+String getApiKey() {
+  try {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty('api.key')
+  } catch (Exception ignored) {}
+
+  return "empty"
+}
+
 android {
   compileSdkVersion 25
   buildToolsVersion "25.0.3"
   defaultConfig {
-    applicationId "com.a99.rxplaces"
+    applicationId "com.a99.rxplaces.demo"
     minSdkVersion 15
+    //noinspection OldTargetApi
     targetSdkVersion 25
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    buildConfigField "String", "GOOGLE_MAPS_API_KEY", "\"${getApiKey()}\""
   }
   buildTypes {
     release {
@@ -18,17 +31,25 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+
+  lintOptions {
+    abortOnError false
+  }
 }
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
+  compile project(":library")
+
+  compile "io.reactivex:rxandroid:$rxandroid_version"
+  compile "com.android.support:appcompat-v7:$support_version"
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+  testCompile 'junit:junit:4.12'
+
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
-  compile 'com.android.support:appcompat-v7:25.3.1'
-  compile 'com.android.support.constraint:constraint-layout:1.0.2'
-  testCompile 'junit:junit:4.12'
-  compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 repositories {

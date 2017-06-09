@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">RxPlaces</string>
+  <string name="hint">Where do you want to go?</string>
 </resources>
