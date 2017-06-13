@@ -13,7 +13,7 @@ data class Prediction(
     @SerializedName("matched_substrings")
     val matchedSubstrings: List<MatchedSubstring> = listOf(),
     @SerializedName("structured_formatting")
-    val structured_formatting: StructuredFormatting = StructuredFormatting("")
+    val structuredFormatting: StructuredFormatting = StructuredFormatting("")
 )
 
 data class Term(
@@ -27,12 +27,13 @@ data class MatchedSubstring(
 )
 
 data class StructuredFormatting(
-    val main_text: String,
-    val main_text_matched_substrings: List<MatchedSubstring> = listOf(),
-    val secondary_text: String = ""
+    @SerializedName("main_text") val mainText: String,
+    @SerializedName("main_text_matched_substrings")
+    val mainTextMatchedSubstrings: List<MatchedSubstring> = listOf(),
+    @SerializedName("secondary_text") val secondaryText: String = ""
 )
 
-data class PlaceAutocompleteResponse(
+internal data class PlaceAutocompleteResponse(
     val status: String,
     val predictions: List<Prediction>
 )

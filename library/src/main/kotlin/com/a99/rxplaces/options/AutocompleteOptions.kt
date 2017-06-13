@@ -1,10 +1,8 @@
 package com.a99.rxplaces.options
 
-import android.location.Location
-
 data class AutocompleteOptions (
     val offset: Int? = null,
-    val location: Location? = null,
+    val location: Pair<Double, Double>? = null,
     val radius: Int? = null,
     val language: String? = null,
     val types: List<AutocompleteType> = listOf(),
@@ -33,7 +31,7 @@ data class AutocompleteOptions (
     }
 
     internal var offset: Int? = null
-    internal var location: Location? = null
+    internal var location: Pair<Double, Double>? = null
     internal var radius: Int? = null
     internal var language: String? = null
     internal var types: List<AutocompleteType> = listOf()
@@ -41,7 +39,7 @@ data class AutocompleteOptions (
     internal var strictBounds: Boolean? = null
 
     fun offset(getOffset: Builder.() -> Int?) = apply { offset = getOffset() }
-    fun location(getLocation: Builder.() -> Location?) = apply { location = getLocation() }
+    fun location(getLocation: Builder.() -> Pair<Double, Double>?) = apply { location = getLocation() }
     fun radius(getRadius: Builder.() -> Int?) = apply { radius = getRadius() }
     fun language(getLanguage: Builder.() -> String?) = apply { language = getLanguage() }
     fun types(getTypes: Builder.() -> List<AutocompleteType>) = apply { types = getTypes() }

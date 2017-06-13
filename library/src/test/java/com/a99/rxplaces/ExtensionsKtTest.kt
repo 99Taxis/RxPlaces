@@ -1,9 +1,6 @@
 package com.a99.rxplaces
 
-import android.location.Location
 import com.a99.rxplaces.options.AutocompleteType
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
@@ -66,12 +63,9 @@ class ExtensionsKtTest {
   }
 
   @Test
-  fun formatLocation() {
+  fun formatWithComma_shouldPutFirstCommaAndSecond() {
     // given
-    val location = mock<Location> {
-      on { latitude }.doReturn(10.0)
-      on { longitude }.doReturn(-20.0)
-    }
+    val location = 10.0 to -20.0
 
     // when
     val formatted = location.formatWithComma()

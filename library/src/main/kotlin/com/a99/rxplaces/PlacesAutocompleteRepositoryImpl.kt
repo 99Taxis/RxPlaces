@@ -1,5 +1,11 @@
 package com.a99.rxplaces
 
+import com.a99.rxplaces.GoogleMapsApi.Companion.INVALID_REQUEST
+import com.a99.rxplaces.GoogleMapsApi.Companion.OK
+import com.a99.rxplaces.GoogleMapsApi.Companion.OVER_QUERY_LIMIT
+import com.a99.rxplaces.GoogleMapsApi.Companion.REQUEST_DENIED
+import com.a99.rxplaces.GoogleMapsApi.Companion.UNKNOWN_ERROR
+import com.a99.rxplaces.GoogleMapsApi.Companion.ZERO_RESULTS
 import com.a99.rxplaces.options.AutocompleteOptions
 import rx.Single
 
@@ -33,15 +39,19 @@ constructor(val apiKey: String, val googleMapsApi: GoogleMapsApi) : PlacesAutoco
     )
   }
 
-  private fun flattenPredictions(response: PlaceAutocompleteResponse): Single<List<Prediction>>? {
-    if (response.status == STATUS_OK) {
-      return Single.fromCallable { response.predictions }
-    } else {
-      return Single.error(Exception("Failure with status ${response.status}"))
+  private fun flattenPredictions(response: PlaceAutocompleteResponse): Single<List<Prediction>> {
+    return when (response.status) {
+      OK -> Single.fromCallable { response.predictions }
+      ZERO_RESULTS -> Single.fromCallable { emptyList<Prediction>() }
+      OVER_QUERY_LIMIT -> Single.error(OverQueryLimitException(FAILURE_MESSAGE))
+      REQUEST_DENIED -> Single.error(RequestDeniedException(FAILURE_MESSAGE))
+      INVALID_REQUEST -> Single.error(InvalidRequestException(FAILURE_MESSAGE))
+      UNKNOWN_ERROR -> Single.error(UnknownErrorException(FAILURE_MESSAGE))
+      else -> Single.error(Exception(FAILURE_MESSAGE.plus("Status: ${response.status}")))
     }
   }
 
   companion object {
-    private const val STATUS_OK = "OK"
+    private const val FAILURE_MESSAGE = "Can't get auto complete options."
   }
 }
