@@ -11,6 +11,8 @@ import android.widget.TextView
 import com.a99.rxplaces.AutocompleteState
 import com.a99.rxplaces.Prediction
 import com.a99.rxplaces.RxAutocomplete
+import com.a99.rxplaces.options.AutocompleteOptions
+import com.a99.rxplaces.options.AutocompleteType
 import rx.android.schedulers.AndroidSchedulers
 
 class DemoActivity : AppCompatActivity() {
@@ -34,7 +36,12 @@ class DemoActivity : AppCompatActivity() {
           }
         }
 
-    rxAutocomplete.observe(editText)
+    val options = AutocompleteOptions.create {
+      types { listOf(AutocompleteType.GEOCODE, AutocompleteType.ESTABLISHMENT) }
+      strictBounds()
+    }
+
+    rxAutocomplete.observe(editText, options)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { showData(it) }
   }

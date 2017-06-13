@@ -3,6 +3,7 @@ package com.a99.rxplaces
 import android.support.annotation.VisibleForTesting
 import android.util.Log
 import android.widget.TextView
+import com.a99.rxplaces.options.AutocompleteOptions
 import rx.Observable
 import rx.Scheduler
 import rx.schedulers.Schedulers
@@ -25,19 +26,17 @@ class RxAutocomplete internal constructor(
 
   fun observe(
       textView: TextView,
-      types: Array<String> = arrayOf("address"),
-      components: Array<String> = arrayOf("country:br")): Observable<List<Prediction>> {
+      options: AutocompleteOptions = AutocompleteOptions.default()): Observable<List<Prediction>> {
 
     val dataSource = RxTextView.textChanges(textView)
         .map { it.toString() }
 
-    return observe(dataSource, types, components)
+    return observe(dataSource, options)
   }
 
   fun observe(
       dataSource: Observable<String>,
-      types: Array<String> = arrayOf("address"),
-      components: Array<String> = arrayOf("country:br")): Observable<List<Prediction>> {
+      options: AutocompleteOptions = AutocompleteOptions.default()): Observable<List<Prediction>> {
 
     return dataSource
         .observeOn(scheduler)
@@ -47,7 +46,7 @@ class RxAutocomplete internal constructor(
         .filter { it.isNotEmpty() }
         .map { it.last() }
         .concatMap { input ->
-          repository.query(input, types, components)
+          repository.query(input, options)
               .doOnSubscribe { logger("RxAutocomplete", "START QUERY: $input") }
               .doOnSubscribe { autocompleteStateSubject.onNext(AutocompleteState.QUERYING) }
               .doOnSuccess { autocompleteStateSubject.onNext(AutocompleteState.SUCCESS) }

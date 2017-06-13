@@ -6,7 +6,7 @@ import rx.Subscriber
 import rx.android.MainThreadSubscription
 import rx.android.MainThreadSubscription.verifyMainThread
 
-class RxTextView {
+internal class RxTextView {
 
   companion object {
     fun textChanges(textView: TextView): Observable<CharSequence> {

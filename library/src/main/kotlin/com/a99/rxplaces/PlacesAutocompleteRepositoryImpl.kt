@@ -1,5 +1,6 @@
 package com.a99.rxplaces
 
+import com.a99.rxplaces.options.AutocompleteOptions
 import rx.Single
 
 internal class PlacesAutocompleteRepositoryImpl
@@ -7,17 +8,37 @@ constructor(val apiKey: String, val googleMapsApi: GoogleMapsApi) : PlacesAutoco
 
   override fun query(
       input: String,
-      types: Array<String>,
-      components: Array<String>
-  ): Single<List<Prediction>> {
-    return googleMapsApi.getPlaceAutocomplete(apiKey, input)
-        .flatMap { (status, predictions) ->
-          if (status == STATUS_OK) {
-            return@flatMap Single.fromCallable { predictions }
-          } else {
-            return@flatMap Single.error<List<Prediction>>(Exception("Failure with status $status"))
-          }
-        }
+      options: AutocompleteOptions): Single<List<Prediction>> {
+
+    val single = createAutocompleteQuerySingle(input, options)
+        .flatMap { flattenPredictions(it) }
+
+    return single
+  }
+
+  private fun createAutocompleteQuerySingle(
+      input: String,
+      options: AutocompleteOptions): Single<PlaceAutocompleteResponse> {
+
+    return googleMapsApi.getPlaceAutocomplete(
+        key = apiKey,
+        input = input,
+        offset = options.offset,
+        location = options.location?.formatWithComma(),
+        radius = options.radius,
+        language = options.language,
+        types = options.types.toPipedString(),
+        components = options.components.toPipedString(),
+        strictBounds = options.strictBounds
+    )
+  }
+
+  private fun flattenPredictions(response: PlaceAutocompleteResponse): Single<List<Prediction>>? {
+    if (response.status == STATUS_OK) {
+      return Single.fromCallable { response.predictions }
+    } else {
+      return Single.error(Exception("Failure with status ${response.status}"))
+    }
   }
 
   companion object {

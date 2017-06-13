@@ -13,6 +13,12 @@ buildscript {
   ext.espresso_version = "2.2.2"
   ext.constraintlayout_version = "1.0.2"
 
+  ext {
+    travisBuild = System.getenv("TRAVIS") == "true"
+    // allows for -Dpre-dex=false to be set
+    preDexEnabled = "true" == System.getProperty("pre-dex", "true")
+  }
+
   repositories {
     jcenter()
   }

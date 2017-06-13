@@ -20,7 +20,7 @@ class RxAutocompleteStressTest {
   val testScheduler = testSchedulerRule.testScheduler
   val repository = mock<PlacesAutocompleteRepository> {
     on {
-      query(any(), any(), any())
+      query(any(), any())
     } doReturn Single.fromCallable { listOf<Prediction>() }
   }
 
@@ -45,7 +45,7 @@ class RxAutocompleteStressTest {
     testSubscriber.assertNoErrors()
     testSubscriber.assertValueCount(3)
 
-    verify(repository, times(3)).query(any(), any(), any())
+    verify(repository, times(3)).query(any(), any())
   }
 
   @Test
@@ -61,19 +61,19 @@ class RxAutocompleteStressTest {
     // when
     testSubject.onNext("aven")
     shiftTime(300, TimeUnit.MILLISECONDS)
-    verify(repository, never()).query(any(), any(), any())
+    verify(repository, never()).query(any(), any())
 
     testSubject.onNext("aveni")
     shiftTime(500, TimeUnit.MILLISECONDS)
-    verify(repository, never()).query(any(), any(), any())
+    verify(repository, never()).query(any(), any())
 
     testSubject.onNext("avenida")
     shiftTime(600, TimeUnit.MILLISECONDS)
-    verify(repository, never()).query(any(), any(), any())
+    verify(repository, never()).query(any(), any())
 
     testSubject.onNext("avenida bra")
     shiftTime(600, TimeUnit.MILLISECONDS)
-    verify(repository).query(any(), any(), any())
+    verify(repository).query(any(), any())
 
     // then
     testSubscriber.assertNoErrors()
@@ -93,19 +93,19 @@ class RxAutocompleteStressTest {
     // when
     testSubject.onNext("aven")
     shiftTime(1, TimeUnit.SECONDS)
-    verify(repository, never()).query(any(), any(), any())
+    verify(repository, never()).query(any(), any())
 
     testSubject.onNext("aveni")
     shiftTime(700, TimeUnit.MILLISECONDS)
-    verify(repository, never()).query(any(), any(), any())
+    verify(repository, never()).query(any(), any())
 
     testSubject.onNext("avenida")
     shiftTime(500, TimeUnit.MILLISECONDS)
-    verify(repository).query(any(), any(), any())
+    verify(repository).query(any(), any())
 
     testSubject.onNext("avenida bra")
     shiftTime(2, TimeUnit.SECONDS)
-    verify(repository, times(2)).query(any(), any(), any())
+    verify(repository, times(2)).query(any(), any())
 
     // then
     testSubscriber.assertNoErrors()
@@ -123,7 +123,7 @@ class RxAutocompleteStressTest {
 
     val repository = mock<PlacesAutocompleteRepository> {
       on {
-        query(any(), any(), any())
+        query(any(), any())
       } doReturn Single.fromCallable { listOf<Prediction>() }
     }
 
@@ -139,7 +139,7 @@ class RxAutocompleteStressTest {
     testSubscriber.assertNoErrors()
     testSubscriber.assertValueCount(5)
 
-    verify(repository, times(5)).query(any(), any(), any())
+    verify(repository, times(5)).query(any(), any())
   }
 
   private fun createRxAutoComplete(repository: PlacesAutocompleteRepository) = RxAutocomplete.create(testScheduler, repository, testSchedulerRule::logger)
