@@ -4,6 +4,7 @@ import com.a99.rxplaces.options.AutocompleteType
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.util.Random
 
@@ -17,7 +18,7 @@ class ExtensionsKtTest {
     val formatted = components.toPipedString()
 
     // then
-    assert(formatted == null)
+    assertNull(formatted)
   }
 
   @Test
