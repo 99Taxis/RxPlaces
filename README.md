@@ -1,4 +1,4 @@
-# RxPlaces [![Build Status](https://travis-ci.org/99Taxis/RxPlaces.svg?branch=master)](https://travis-ci.org/99Taxis/RxPlaces)  [ ![Download](https://api.bintray.com/packages/99dev/RxPlaces/library/images/download.svg) ](https://bintray.com/99dev/RxPlaces/library/_latestVersion)
+# RxPlaces [![Build Status](https://travis-ci.org/99Taxis/RxPlaces.svg?branch=master)](https://travis-ci.org/99Taxis/RxPlaces)  [ ![Download](https://api.bintray.com/packages/99/android/rxplaces/images/download.svg) ](https://bintray.com/99/android/rxplaces/_latestVersion)
 A reactive approach for the Google Maps Webservice API
 
 ## Current features:
@@ -7,16 +7,8 @@ A reactive approach for the Google Maps Webservice API
 
 ## Download
 
-Add the library to your build.gradle
-
 ```groovy
-repositories {
-    maven { url  "http://99dev.bintray.com/RxPlaces" }
-}
-```
-
-```groovy
-compile 'com.a99.rxplaces:library:library_version'
+compile 'com.a99.rxplaces:library:0.1.0-alpha'
 ```
 
 ## Places Autocomplete
