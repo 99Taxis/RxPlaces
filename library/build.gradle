@@ -61,3 +61,35 @@ dependencies {
 repositories {
   mavenCentral()
 }
+
+ext {
+  bintrayRepo = 'android'
+  bintrayName = 'rxplaces'
+  organizationName = '99'
+
+  publishedGroupId = 'com.a99.rxplaces'
+  libraryName = 'library'
+  artifact = 'library'
+
+  libraryDescription = 'A Google Maps Webservice API made simple.'
+
+  siteUrl = 'https://github.com/99Taxis/RxPlaces'
+  gitUrl = 'https://github.com/99Taxis/RxPlaces.git'
+
+  libraryVersion = '0.1.0-alpha'
+
+  developerId = '99Taxis'
+  developerName = '99'
+  developerEmail = 'mobile-dev@99taxis.com'
+
+  licenseName = 'The Apache Software License, Version 2.0'
+  licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+  allLicenses = ["Apache-2.0"]
+}
+
+apply from: "../maven_plugin_setup.gradle"
+apply from: "../bintray_plugin_setup.gradle"
+
+tasks.withType(Javadoc) {
+  enabled = false
+}
