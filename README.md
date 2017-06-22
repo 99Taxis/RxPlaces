@@ -141,7 +141,7 @@ Don't be shy, send a Pull Request! Here is how:
 License
 -------
 
-    Copyright (C) 2017 99Taxis
+    Copyright (C) 2017 99
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
