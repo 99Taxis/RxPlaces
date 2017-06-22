@@ -11,6 +11,15 @@ A reactive approach for the Google Maps Webservice API
 compile 'com.a99.rxplaces:library:0.1.0-alpha'
 ```
 
+## Proguard Rules
+
+Add the following line to your `proguard-rules.pro`
+
+```
+-keep class com.a99.rxplaces.** { *; }
+```
+
+
 ## Places Autocomplete
 
 ### Initialization
