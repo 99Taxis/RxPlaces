@@ -1,6 +1,7 @@
 package com.a99.rxplaces
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 internal data class GeocodeResponse(
     val status: String,
@@ -14,7 +15,7 @@ data class GeocodeResult(
     @SerializedName("partial_match") val partialMatch: Boolean,
     @SerializedName("place_id") val placeId: String,
     val types: List<String>
-) {
+) : Serializable {
   fun getStreetName() = getAddressComponentLongName("route")
   fun getStreetNumber() = getAddressComponentLongName("street_number")
   fun getPostalCode() = getAddressComponentLongName("postal_code")
@@ -35,20 +36,20 @@ data class AddressComponent(
     @SerializedName("long_name") val longName: String,
     @SerializedName("short_name") val shortName: String,
     val types: List<String>
-)
+) : Serializable
 
 data class Geometry(
     val location: LatLng,
     @SerializedName("location_type") val locationType: String,
     val viewport: Viewport
-)
+) : Serializable
 
 data class LatLng(
     val lat: Double,
     val lng: Double
-)
+) : Serializable
 
 data class Viewport(
     val northeast: LatLng,
     val southwest: LatLng
-)
+) : Serializable

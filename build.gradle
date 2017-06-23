@@ -14,6 +14,7 @@ buildscript {
   ext.mockito_kotlin_version = "1.5.0"
   ext.espresso_version = "2.2.2"
   ext.constraintlayout_version = "1.0.2"
+  ext.play_services_version = "11.0.1"
 
   ext {
     travisBuild = System.getenv("TRAVIS") == "true"

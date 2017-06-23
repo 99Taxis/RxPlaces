@@ -42,6 +42,7 @@ dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
   compile "com.android.support:support-annotations:$support_version"
   compile "com.android.support:design:$support_version"
+  compile "com.google.android.gms:play-services-maps:$play_services_version"
   compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
   compile "io.reactivex:rxjava:$rxjava_version"
   compile "io.reactivex:rxandroid:$rxandroid_version"
