@@ -3,23 +3,27 @@ package com.a99.rxplaces.demo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.a99.rxplaces.AutocompleteState
+import com.a99.rxplaces.GeocodeRepository
 import com.a99.rxplaces.Prediction
 import com.a99.rxplaces.RxAutocomplete
 import com.a99.rxplaces.options.AutocompleteOptions
 import com.a99.rxplaces.options.AutocompleteType
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class DemoActivity : AppCompatActivity() {
 
   val editText by lazy { findViewById(R.id.input) as EditText }
   val loading: View by lazy { findViewById(R.id.loading) }
   val outputContainer by lazy { findViewById(R.id.outputContainer) as LinearLayout }
+
+  val geocodeRepository by lazy { GeocodeRepository.create(BuildConfig.GOOGLE_MAPS_API_KEY) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -30,9 +34,9 @@ class DemoActivity : AppCompatActivity() {
     rxAutocomplete.stateStream()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { autocompleteState ->
-          loading.visibility = when (autocompleteState) {
-            AutocompleteState.QUERYING -> VISIBLE
-            else -> GONE
+          when (autocompleteState) {
+            AutocompleteState.QUERYING -> loading.show()
+            else -> loading.hide()
           }
         }
 
@@ -63,7 +67,24 @@ class DemoActivity : AppCompatActivity() {
       }
 
 
-  private fun showPlaceDetails(id: String) {
+  private fun showPlaceDetails(placeId: String) {
+    geocodeRepository.reverseGeocode(placeId)
+        .subscribeOn(Schedulers.io())
+        .doOnSubscribe { loading.show() }
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            {  },
+            {  },
+            { loading.hide() }
+        )
 
   }
+}
+
+fun View.show() {
+  this.visibility = VISIBLE
+}
+
+fun View.hide() {
+  this.visibility = INVISIBLE
 }
