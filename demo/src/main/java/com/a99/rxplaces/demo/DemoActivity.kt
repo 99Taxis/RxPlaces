@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.a99.rxplaces.AutocompleteState
 import com.a99.rxplaces.GeocodeRepository
+import com.a99.rxplaces.GeocodeResult
 import com.a99.rxplaces.Prediction
 import com.a99.rxplaces.RxAutocomplete
 import com.a99.rxplaces.options.AutocompleteOptions
@@ -73,11 +74,17 @@ class DemoActivity : AppCompatActivity() {
         .doOnSubscribe { loading.show() }
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-            {  },
-            {  },
+            { showPlace(it) },
+            { },
             { loading.hide() }
         )
 
+  }
+
+  private fun showPlace(geocodeResult: GeocodeResult?) {
+    geocodeResult?.let {
+      
+    }
   }
 }
 
