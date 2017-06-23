@@ -83,7 +83,7 @@ class DemoActivity : AppCompatActivity() {
 
   private fun showPlace(geocodeResult: GeocodeResult?) {
     geocodeResult?.let {
-      
+
     }
   }
 }
