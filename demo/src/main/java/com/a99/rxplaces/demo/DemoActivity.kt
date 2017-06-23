@@ -54,9 +54,16 @@ class DemoActivity : AppCompatActivity() {
         .forEach { outputContainer.addView(it) }
   }
 
-  private fun createTextView(it: Prediction): TextView {
-    val textView = TextView(this)
-    textView.text = it.description
-    return textView
+  private fun createTextView(prediction: Prediction) = TextView(this)
+      .apply {
+        text = prediction.description
+        setOnClickListener {
+          showPlaceDetails(prediction.id)
+        }
+      }
+
+
+  private fun showPlaceDetails(id: String) {
+
   }
 }
