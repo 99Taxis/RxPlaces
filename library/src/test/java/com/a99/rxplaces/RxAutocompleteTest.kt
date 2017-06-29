@@ -12,10 +12,9 @@ import rx.Observable
 import rx.Single
 import rx.observers.TestSubscriber
 import rx.subjects.TestSubject
-import java.util.Random
 import java.util.concurrent.TimeUnit
 
-class RxAutocompleteStressTest {
+class RxAutocompleteTest {
   @Rule @JvmField val testSchedulerRule = TestSchedulerRule()
   val testScheduler = testSchedulerRule.testScheduler
   val repository = mock<PlacesAutocompleteRepository> {
@@ -23,6 +22,7 @@ class RxAutocompleteStressTest {
       query(any(), any())
     } doReturn Single.fromCallable { listOf<Prediction>() }
   }
+  val rxAutocomplete = createRxAutoComplete(repository)
 
   @Test
   fun manyInputs_samePace() {
@@ -33,8 +33,6 @@ class RxAutocompleteStressTest {
     val from = simulateTyping(Observable.from(words))
         .zipWith(Observable.interval(100, TimeUnit.MILLISECONDS), { word, _ -> word })
 
-    val rxAutocomplete = createRxAutoComplete(repository)
-
     rxAutocomplete.observe(from)
         .subscribe(testSubscriber)
 
@@ -43,9 +41,9 @@ class RxAutocompleteStressTest {
 
     // then
     testSubscriber.assertNoErrors()
-    testSubscriber.assertValueCount(3)
+    testSubscriber.assertValueCount(1)
 
-    verify(repository, times(3)).query(any(), any())
+    verify(repository).query(any(), any())
   }
 
   @Test
@@ -53,7 +51,6 @@ class RxAutocompleteStressTest {
     // given
     val testSubscriber = TestSubscriber<Any>()
     val testSubject = TestSubject.create<String>(testScheduler)
-    val rxAutocomplete = createRxAutoComplete(repository)
 
     rxAutocomplete.observe(testSubject)
         .subscribe(testSubscriber)
@@ -72,7 +69,7 @@ class RxAutocompleteStressTest {
     verify(repository, never()).query(any(), any())
 
     testSubject.onNext("avenida bra")
-    shiftTime(600, TimeUnit.MILLISECONDS)
+    shiftTime(2, TimeUnit.SECONDS)
     verify(repository).query(any(), any())
 
     // then
@@ -85,7 +82,6 @@ class RxAutocompleteStressTest {
     // given
     val testSubscriber = TestSubscriber<Any>()
     val testSubject = TestSubject.create<String>(testScheduler)
-    val rxAutocomplete = createRxAutoComplete(repository)
 
     rxAutocomplete.observe(testSubject)
         .subscribe(testSubscriber)
@@ -100,7 +96,7 @@ class RxAutocompleteStressTest {
     verify(repository, never()).query(any(), any())
 
     testSubject.onNext("avenida")
-    shiftTime(500, TimeUnit.MILLISECONDS)
+    shiftTime(3, TimeUnit.SECONDS)
     verify(repository).query(any(), any())
 
     testSubject.onNext("avenida bra")
@@ -113,47 +109,35 @@ class RxAutocompleteStressTest {
   }
 
   @Test
-  fun randomInputs_inShortRandomInterval() {
+  fun inputAndErase_shouldNotQuery() {
+    // given
     val testSubscriber = TestSubscriber<Any>()
-    val randomInterval = { Random().nextInt(1000).toLong() }
+    val testSubject = TestSubject.create<String>(testScheduler)
 
-    val randomInputs = Observable.range(1, Int.MAX_VALUE)
-        .map { "Input $it" }
-        .delay { Observable.interval(randomInterval(), TimeUnit.MILLISECONDS) }
-
-    val repository = mock<PlacesAutocompleteRepository> {
-      on {
-        query(any(), any())
-      } doReturn Single.fromCallable { listOf<Prediction>() }
-    }
-
-    val rxAutocomplete = createRxAutoComplete(repository)
-
-    rxAutocomplete.observe(randomInputs)
+    rxAutocomplete.observe(testSubject)
         .subscribe(testSubscriber)
 
     // when
-    shiftTime(10, TimeUnit.SECONDS)
+    testSubject.onNext("avenida paulista")
+    shiftTime(1, TimeUnit.SECONDS)
+    verify(repository, never()).query(any(), any())
+
+    testSubject.onNext("avenida")
+    shiftTime(1, TimeUnit.SECONDS)
+    verify(repository, never()).query(any(), any())
+
+    testSubject.onNext("")
+    shiftTime(1500, TimeUnit.MILLISECONDS)
+    verify(repository, never()).query(any(), any())
 
     // then
     testSubscriber.assertNoErrors()
-    testSubscriber.assertValueCount(5)
-
-    verify(repository, times(5)).query(any(), any())
+    testSubscriber.assertNoValues()
   }
 
   private fun createRxAutoComplete(repository: PlacesAutocompleteRepository) = RxAutocomplete.create(testScheduler, repository, testSchedulerRule::logger)
 
   private fun shiftTime(interval: Long, timeUnit: TimeUnit) {
     testSchedulerRule.testScheduler.advanceTimeBy(interval, timeUnit)
-  }
-
-  private fun simulateTyping(words: Observable<String>): Observable<String> {
-    return words.map { it.toCharArray() }
-        .concatMap { charArray ->
-          Observable.from(charArray.toList())
-              .map { it.toString() }
-              .scan { accumulator: String, next: String -> accumulator + next }
-        }
   }
 }

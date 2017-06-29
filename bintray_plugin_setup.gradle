@@ -33,7 +33,7 @@ artifacts {
 Properties properties = new Properties()
 
 try {
-  properties.load(project.rootProject.file('local.properties_Aaaaz').newDataInputStream())
+  properties.load(project.rootProject.file('local.properties').newDataInputStream())
 } catch (Exception ignored) {
   properties.put("bintray.user", "")
   properties.put("bintray.apikey", "")

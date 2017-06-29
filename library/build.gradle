@@ -76,7 +76,7 @@ ext {
   siteUrl = 'https://github.com/99Taxis/RxPlaces'
   gitUrl = 'https://github.com/99Taxis/RxPlaces.git'
 
-  libraryVersion = '0.1.0-alpha'
+  libraryVersion = '0.1.0-alpha3'
 
   developerId = '99Taxis'
   developerName = '99'

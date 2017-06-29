@@ -40,11 +40,9 @@ class RxAutocomplete internal constructor(
 
     return dataSource
         .observeOn(scheduler)
-        .filter { it.length > minKeyStroke }
         .doOnNext { logger("RxAutocomplete", "Received: $it") }
-        .buffer(queryInterval.first, queryInterval.second)
-        .filter { it.isNotEmpty() }
-        .map { it.last() }
+        .lift(createAutoCompleteBufferOperator())
+        .filter { it.length > minKeyStroke }
         .concatMap { input ->
           repository.query(input, options)
               .doOnSubscribe { logger("RxAutocomplete", "START QUERY: $input") }
@@ -54,6 +52,13 @@ class RxAutocomplete internal constructor(
               .toObservable()
               .onErrorResumeNext { Observable.empty() }
         }
+  }
+
+  private fun createAutoCompleteBufferOperator(): AutocompleteBufferOperator<String> {
+    return AutocompleteBufferOperator(
+        scheduler = scheduler,
+        timespan = queryInterval
+    )
   }
 
   companion object {
