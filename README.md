@@ -8,7 +8,7 @@ A reactive approach for the Google Maps Webservice API
 ## Download
 
 ```groovy
-compile 'com.a99.rxplaces:library:0.1.0-alpha'
+compile 'com.a99.rxplaces:library:0.1.0-alpha3'
 ```
 
 ## Proguard Rules
